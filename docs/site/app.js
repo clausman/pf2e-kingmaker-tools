@@ -233,18 +233,41 @@ function renderActivity(activity) {
     const fortuneIndicator = activity.fortune ? '<span class="fortune-indicator">🍀</span>' : '';
     const oncePerRound = activity.oncePerRound ? '<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Once per round</span>' : '';
     
-    // Get skill names
+    // Get skill names with proficiency ranks
     const skills = [];
+    const skillsWithLabels = [];
     if (activity.skills) {
         for (const [skill, rank] of Object.entries(activity.skills)) {
-            if (rank > 0 || Object.keys(activity.skills).length === 1) {
-                skills.push(skill.charAt(0).toUpperCase() + skill.slice(1));
+            const skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
+            skills.push(skillName);
+            
+            // Add proficiency label for ranks > 0
+            let proficiencyLabel = '';
+            let proficiencyColor = '';
+            if (rank === 1) {
+                proficiencyLabel = 'T';
+                proficiencyColor = 'bg-blue-500 text-white';
+            } else if (rank === 2) {
+                proficiencyLabel = 'E';
+                proficiencyColor = 'bg-green-500 text-white';
+            } else if (rank === 3) {
+                proficiencyLabel = 'M';
+                proficiencyColor = 'bg-purple-500 text-white';
+            } else if (rank === 4) {
+                proficiencyLabel = 'L';
+                proficiencyColor = 'bg-orange-500 text-white';
+            }
+            
+            if (proficiencyLabel) {
+                skillsWithLabels.push(`<span class="inline-flex items-center gap-0.5"><span class="text-xs font-bold px-1 py-0 rounded ${proficiencyColor}">${proficiencyLabel}</span>${skillName}</span>`);
+            } else {
+                skillsWithLabels.push(skillName);
             }
         }
     }
-    const skillsText = skills.length > 0 ? `<span class="text-sm text-gray-600">Skills: ${skills.join(', ')}</span>` : '';
+    const skillsText = skillsWithLabels.length > 0 ? `<span class="text-sm text-gray-600">Skills: ${skillsWithLabels.join(', ')}</span>` : '';
     
-    // Get DC type
+    // Get DC type (not rendered, but kept for potential future use)
     let dcType = '';
     if (activity.dc) {
         if (typeof activity.dc === 'string') {
@@ -269,8 +292,7 @@ function renderActivity(activity) {
                             ${oncePerRound}
                         </div>
                         <div class="flex items-center gap-2 text-xs text-gray-500 shrink-0">
-                            ${skillsText ? `<span class="hidden sm:inline">${skills.join(', ')}</span>` : ''}
-                            ${dcType ? `<span class="text-xs">${dcType.replace(' DC', '')}</span>` : ''}
+                            ${skillsText ? `<span class="hidden sm:inline">${skillsWithLabels.join(', ')}</span>` : ''}
                         </div>
                     </div>
                 </summary>
@@ -292,13 +314,6 @@ function renderActivity(activity) {
                             <div class="mb-2">
                                 <span class="text-xs font-semibold text-gray-600 uppercase">Special:</span>
                                 <span class="text-gray-700 text-xs">${special}</span>
-                            </div>
-                        ` : ''}
-                        
-                        ${automationNotes ? `
-                            <div class="mb-2">
-                                <span class="text-xs font-semibold text-gray-600 uppercase">Automation:</span>
-                                <span class="text-gray-600 text-xs italic">${automationNotes}</span>
                             </div>
                         ` : ''}
                         
