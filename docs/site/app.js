@@ -65,7 +65,7 @@ function getTranslation(key) {
 
 // Create action glyph HTML
 function createActionGlyphs(actions) {
-    if (!actions) return '';
+    if (true || !actions) return '';
     
     const glyphs = [];
     for (let i = 0; i < actions; i++) {
