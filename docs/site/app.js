@@ -81,6 +81,69 @@ function stripHtml(html) {
     return tmp.textContent || tmp.innerText || '';
 }
 
+// Parse and convert special @ strings to human-readable text
+function parseSpecialStrings(text) {
+    if (!text) return '';
+    
+    // Handle @Check patterns like @Check[dc:11|type:flat]
+    text = text.replace(/@Check\[([^\]]+)\]/g, (match, params) => {
+        const parts = params.split('|');
+        const dc = parts.find(p => p.startsWith('dc:'))?.split(':')[1] || '?';
+        const type = parts.find(p => p.startsWith('type:'))?.split(':')[1] || 'check';
+        return `a DC ${dc} ${type} check`;
+    });
+    
+    // Handle @UUID patterns (just remove them for now)
+    text = text.replace(/@UUID\[[^\]]+\]/g, '');
+    
+    // Handle resource button patterns like @gain1Unrest, @lose4ResourcePoints, @gain1d4Crime, etc.
+    const resourcePattern = /@(gain|lose)(Multiple)?([0-9rd+]+)([a-zA-Z]+)(NextTurn)?/g;
+    text = text.replace(resourcePattern, (match, mode, multiple, value, resource, turn) => {
+        // Parse the resource type
+        const resourceName = resource
+            .replace(/Event$/, '')  // Remove 'Event' suffix for event types
+            .replace(/([A-Z])/g, ' $1')  // Add space before capital letters
+            .trim()
+            .toLowerCase();
+        
+        // Handle special resource types
+        let displayResource = resourceName;
+        if (resource === 'ResourcePoints') {
+            displayResource = 'Resource Points';
+        } else if (resource === 'ResourceDice') {
+            displayResource = 'Resource Dice';
+        } else if (resource === 'RolledResourceDice') {
+            displayResource = 'RP (roll ' + value.replace('rd', '') + ' Resource Dice)';
+        } else if (resource.endsWith('Event')) {
+            // Handle event types
+            const eventType = resource.replace(/Event$/, '').replace(/([A-Z])/g, ' $1').trim();
+            return mode === 'gain' ? `experience a ${eventType} event` : `resolve a ${eventType} event`;
+        } else {
+            // Capitalize first letter for display
+            displayResource = resourceName.charAt(0).toUpperCase() + resourceName.slice(1);
+        }
+        
+        // Build the human-readable text
+        let result = mode === 'gain' ? 'gain' : 'lose';
+        if (multiple) result += ' multiple';
+        
+        // Handle dice expressions
+        if (value.includes('d')) {
+            result += ' ' + value + ' ' + displayResource;
+        } else {
+            result += ' ' + value + ' ' + displayResource;
+        }
+        
+        if (turn === 'NextTurn') {
+            result += ' next turn';
+        }
+        
+        return result;
+    });
+    
+    return text;
+}
+
 // Render activities
 function renderActivities() {
     const container = document.getElementById('activitiesList');
@@ -147,15 +210,15 @@ function renderPhaseSection(phase, activities) {
 // Render a single activity
 function renderActivity(activity) {
     const title = getTranslation(activity.title);
-    const description = getTranslation(activity.description);
-    const requirement = activity.requirement ? getTranslation(activity.requirement) : null;
-    const special = activity.special ? getTranslation(activity.special) : null;
-    const automationNotes = activity.automationNotes ? getTranslation(activity.automationNotes) : null;
+    const description = parseSpecialStrings(getTranslation(activity.description));
+    const requirement = activity.requirement ? parseSpecialStrings(getTranslation(activity.requirement)) : null;
+    const special = activity.special ? parseSpecialStrings(getTranslation(activity.special)) : null;
+    const automationNotes = activity.automationNotes ? parseSpecialStrings(getTranslation(activity.automationNotes)) : null;
     
-    const criticalSuccess = activity.criticalSuccess ? getTranslation(activity.criticalSuccess.msg) : null;
-    const success = activity.success ? getTranslation(activity.success.msg) : null;
-    const failure = activity.failure ? getTranslation(activity.failure.msg) : null;
-    const criticalFailure = activity.criticalFailure ? getTranslation(activity.criticalFailure.msg) : null;
+    const criticalSuccess = activity.criticalSuccess ? parseSpecialStrings(getTranslation(activity.criticalSuccess.msg)) : null;
+    const success = activity.success ? parseSpecialStrings(getTranslation(activity.success.msg)) : null;
+    const failure = activity.failure ? parseSpecialStrings(getTranslation(activity.failure.msg)) : null;
+    const criticalFailure = activity.criticalFailure ? parseSpecialStrings(getTranslation(activity.criticalFailure.msg)) : null;
     
     const actionGlyphs = activity.actions ? createActionGlyphs(activity.actions) : '';
     const fortuneIndicator = activity.fortune ? '<span class="fortune-indicator">🍀</span>' : '';
