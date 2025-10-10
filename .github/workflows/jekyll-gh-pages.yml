@@ -28,6 +28,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Generate JSON data files
+        run: ./gradlew combineJsonFiles
+      - name: Copy data files to docs/site
+        run: |
+          cd docs/site
+          ./setup.sh
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
