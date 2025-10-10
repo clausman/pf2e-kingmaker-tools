@@ -3,7 +3,7 @@
   "title": "activities.retrain-vk.title",
   "phase": "leadership",
   "actions": 2,
-  "enabled": false,
+  "enabled": true,
   "dc": "control",
   "oncePerRound": true,
   "fortune": false,
@@ -26,6 +26,7 @@
     "wilderness": 0
   },
   "description": "activities.retrain-vk.description",
+  "special": "activities.retrain-vk.special",
   "criticalSuccess": {
     "msg": "activities.retrain-vk.criticalSuccess.msg"
   },

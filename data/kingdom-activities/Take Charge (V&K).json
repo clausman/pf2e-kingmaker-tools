@@ -2,7 +2,7 @@
   "id": "take-charge-vk",
   "oncePerRound": false,
   "fortune": false,
-  "enabled": false,
+  "enabled": true,
   "phase": "leadership",
   "dc": "control",
   "title": "activities.take-charge-vk.title",
