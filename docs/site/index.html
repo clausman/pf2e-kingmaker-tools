@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kingdom Actions Quick Reference - PF2e Kingmaker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <noscript>
+        <link rel="stylesheet" href="styles.css">
+    </noscript>
+    <style>
+        /* Custom action glyphs */
+        .action-glyph {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: #5e0000;
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin: 0 0.125rem;
+        }
+        
+        /* Smooth transitions for accordions */
+        details summary {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        details summary::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 0.5rem;
+            transition: transform 0.2s;
+        }
+        
+        details[open] summary::before {
+            transform: rotate(90deg);
+        }
+        
+        /* Phase badge colors */
+        .phase-commerce { background-color: #059669; }
+        .phase-leadership { background-color: #7c3aed; }
+        .phase-region { background-color: #0891b2; }
+        .phase-civic { background-color: #dc2626; }
+        .phase-army { background-color: #ea580c; }
+        .phase-upkeep { background-color: #6b7280; }
+        
+        /* Fortune indicator */
+        .fortune-indicator {
+            color: #10b981;
+        }
+        
+        /* Hide scrollbar for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <h1 class="text-2xl font-bold text-gray-900">Kingdom Actions Reference</h1>
+            <p class="text-sm text-gray-600 mt-1">Pathfinder 2e Kingmaker - Kingdom Building Rules</p>
+        </div>
+    </header>
+
+    <!-- Search and Filter -->
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="bg-white rounded-lg shadow-sm p-4 space-y-3">
+            <!-- Search Input -->
+            <div>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search actions by name or description..." 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+            </div>
+            
+            <!-- Phase Filters -->
+            <div class="flex flex-wrap gap-2">
+                <button class="phase-filter active px-3 py-1.5 rounded-full text-white text-sm font-medium bg-blue-600" data-phase="all">
+                    All Phases
+                </button>
+                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-commerce" data-phase="commerce">
+                    Commerce
+                </button>
+                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-leadership" data-phase="leadership">
+                    Leadership
+                </button>
+                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-region" data-phase="region">
+                    Region
+                </button>
+                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-civic" data-phase="civic">
+                    Civic
+                </button>
+                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-army" data-phase="army">
+                    Army
+                </button>
+                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-upkeep" data-phase="upkeep">
+                    Upkeep
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center text-gray-600">
+            <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent rounded-full" role="status"></div>
+            <p class="mt-2">Loading kingdom actions...</p>
+        </div>
+    </div>
+
+    <!-- Activities List -->
+    <div id="activitiesList" class="max-w-7xl mx-auto px-4 py-4 space-y-4 hidden">
+        <!-- Activities will be inserted here -->
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="max-w-7xl mx-auto px-4 py-8 hidden">
+        <div class="text-center text-gray-600">
+            <p class="text-lg">No activities found matching your search.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 py-8 mt-8 border-t border-gray-200">
+        <p class="text-sm text-gray-600 text-center">
+            Kingdom Building rules for Pathfinder 2e Kingmaker. 
+            <a href="https://2e.aonprd.com/Rules.aspx?ID=1781" target="_blank" class="text-blue-600 hover:underline">View official rules</a>
+        </p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
