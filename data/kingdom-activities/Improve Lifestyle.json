@@ -1,7 +1,7 @@
 {
   "id": "improve-lifestyle",
   "order": 2,
-  "oncePerRound": false,
+  "oncePerRound": true,
   "fortune": false,
   "enabled": true,
   "phase": "commerce",
