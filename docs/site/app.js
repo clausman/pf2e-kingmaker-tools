@@ -261,7 +261,10 @@ function renderActivity(activity) {
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2 flex-1 min-w-0">
                             ${actionGlyphs}
-                            <h3 class="font-semibold text-gray-900 text-sm truncate">${title}</h3>
+                            <h3 class="font-semibold text-gray-900 text-sm truncate flex items-center gap-1">
+                                ${title}
+                                <span class="text-gray-400 text-xs group-open:rotate-90 transition-transform inline-block">▶</span>
+                            </h3>
                             ${fortuneIndicator}
                             ${oncePerRound}
                         </div>
