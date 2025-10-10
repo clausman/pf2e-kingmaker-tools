@@ -3,18 +3,41 @@ let allActivities = [];
 let translations = {};
 let currentPhaseFilter = 'all';
 let currentSearchTerm = '';
+let currentLanguage = 'en';
+
+// Supported languages
+const SUPPORTED_LANGUAGES = [
+    { code: 'en', name: 'English' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'fr', name: 'Français' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'pl', name: 'Polski' },
+    { code: 'zh-Hans', name: '简体中文' },
+    { code: 'pt_BR', name: 'Português (BR)' }
+];
 
 // Load data
 async function loadData() {
     try {
+        // Get saved language preference or default to English
+        const savedLanguage = localStorage.getItem('kingdomActionsLanguage') || 'en';
+        currentLanguage = savedLanguage;
+        
+        // Update language selector
+        const languageSelector = document.getElementById('languageSelector');
+        if (languageSelector) {
+            languageSelector.value = currentLanguage;
+        }
+        
         // Load both JSON files
         const [activitiesResponse, translationsResponse] = await Promise.all([
             fetch('data/kingdom-activities.json'),
-            fetch('data/en.json')
+            fetchTranslations(currentLanguage)
         ]);
 
         const activitiesData = await activitiesResponse.json();
-        const translationsData = await translationsResponse.json();
+        const translationsData = await translationsResponse;
         
         allActivities = activitiesData.filter(activity => activity.enabled !== false);
         translations = translationsData['pf2e-kingmaker-tools'];
@@ -38,6 +61,62 @@ async function loadData() {
         document.getElementById('loadingState').innerHTML = `
             <div class="text-center text-red-600">
                 <p class="text-lg font-semibold">Error loading data</p>
+                <p class="mt-2">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Fetch translations for a specific language, with fallback to English
+async function fetchTranslations(langCode) {
+    try {
+        const response = await fetch(`data/${langCode}.json`);
+        if (!response.ok) {
+            // If the requested language is not available, fall back to English
+            if (langCode !== 'en') {
+                console.warn(`Language ${langCode} not found, falling back to English`);
+                const enResponse = await fetch('data/en.json');
+                return await enResponse.json();
+            }
+            throw new Error(`Failed to load translations: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error loading translations:', error);
+        // Final fallback to English
+        if (langCode !== 'en') {
+            const enResponse = await fetch('data/en.json');
+            return await enResponse.json();
+        }
+        throw error;
+    }
+}
+
+// Change language
+async function changeLanguage(langCode) {
+    currentLanguage = langCode;
+    localStorage.setItem('kingdomActionsLanguage', langCode);
+    
+    // Show loading state
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('activitiesList').classList.add('hidden');
+    
+    try {
+        // Reload translations
+        const translationsResponse = await fetchTranslations(langCode);
+        translations = translationsResponse['pf2e-kingmaker-tools'];
+        
+        // Re-render with new translations
+        renderActivities();
+        
+        // Hide loading, show content
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('activitiesList').classList.remove('hidden');
+    } catch (error) {
+        console.error('Error changing language:', error);
+        document.getElementById('loadingState').innerHTML = `
+            <div class="text-center text-red-600">
+                <p class="text-lg font-semibold">Error loading language</p>
                 <p class="mt-2">${error.message}</p>
             </div>
         `;
@@ -396,6 +475,14 @@ function setupEventListeners() {
             renderActivities();
         });
     });
+    
+    // Language selector
+    const languageSelector = document.getElementById('languageSelector');
+    if (languageSelector) {
+        languageSelector.addEventListener('change', (e) => {
+            changeLanguage(e.target.value);
+        });
+    }
 }
 
 // Initialize

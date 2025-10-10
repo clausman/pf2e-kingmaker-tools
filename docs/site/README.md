@@ -10,6 +10,7 @@ This website provides an easy-to-use interface for quickly looking up Kingdom Ac
 
 - **Search**: Real-time search through action names and descriptions
 - **Phase Filtering**: Filter actions by kingdom phase (Commerce, Leadership, Region, Civic, Army, Upkeep)
+- **Multi-Language Support**: Switch between English, Russian, German, French, Italian, Polish, Chinese (Simplified), and Brazilian Portuguese
 - **Expandable Details**: Click on any action to see full details including:
   - Description
   - Requirements
@@ -73,8 +74,28 @@ The site consists of static HTML, CSS, and JavaScript files that can be hosted o
 The website loads data directly from:
 - `data/kingdom-activities.json` - Combined activities from all individual JSON files in `data/kingdom-activities/`
 - `data/en.json` - English translations for all text strings
+- `data/<lang>.json` - Optional translations for other supported languages (ru, de, fr, it, pl, zh-Hans, pt_BR)
+
+The site will automatically fall back to English if a requested language file is not available.
 
 This ensures the website always displays the most current game data without needing to manually update content.
+
+### Adding New Languages
+
+To add new language translations:
+
+1. Pull translations from Transifex:
+   ```bash
+   ./gradlew txPull
+   ```
+
+2. Run the setup script to copy the new language files:
+   ```bash
+   cd docs/site
+   ./setup.sh
+   ```
+
+The language selector will automatically work with any available language files in the `data/` directory.
 
 ## Browser Compatibility
 

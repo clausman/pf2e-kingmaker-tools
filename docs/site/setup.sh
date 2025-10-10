@@ -28,7 +28,18 @@ fi
 # Copy data files
 echo "Copying data files..."
 cp "$PROJECT_ROOT/build/generated/data/kingdom-activities.json" "$SCRIPT_DIR/data/"
+
+# Copy English translation (required)
 cp "$PROJECT_ROOT/lang/en.json" "$SCRIPT_DIR/data/"
+
+# Copy other language files if they exist (optional)
+echo "Copying language files..."
+for lang_file in "$PROJECT_ROOT/lang"/*.json; do
+    if [ -f "$lang_file" ] && [ "$(basename "$lang_file")" != "en.json" ]; then
+        cp "$lang_file" "$SCRIPT_DIR/data/"
+        echo "  Copied $(basename "$lang_file")"
+    fi
+done
 
 echo "Setup complete!"
 echo ""
