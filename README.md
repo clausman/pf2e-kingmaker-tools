@@ -46,6 +46,10 @@ including optional and popular homebrew from Vance & Kerenshara:
 
 You can look up my tips and house rules [here](./docs/house-rules.md)
 
+### Kingdom Actions Quick Reference
+
+A mobile-friendly web-based quick reference for Kingdom Actions is available in [docs/site](./docs/site). This provides an easy-to-use interface that players can access on their phones to quickly look up Kingdom Actions during gameplay. See the [setup instructions](./docs/site/README.md) for how to run it locally.
+
 ### Official Module Integration
 
 If you've enabled the official module, the following things are automatically taken care of:
