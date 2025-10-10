@@ -2688,7 +2688,7 @@
             "buttonLabel": "+4 DC Increase if Celebrate Holiday on the Next Turn"
           }
         },
-        "description": "<p>You declare a day of celebration. Holidays may be religious, historical, martial, or simply festive, but all relieve your citizens from their labors and give them a chance to make merry at the kingdom's expense. Celebrate Holiday can be rolled using either Folklore or Politics. The Celebrate Holiday Activity is limited to 1/Turn, but applies to all holidays within that month. Attempt a basic check, but if your kingdom Celebrated a Holiday the previous turn, the DC increases by 4, as your kingdom hasn't had a chance to recover from the previous gala.</p>",
+        "description": "<p>You declare a day of celebration. Holidays may be religious, historical, martial, or simply festive, but all relieve your citizens from their labors and give them a chance to make merry at the kingdom’s expense. Celebrate Holiday can be rolled using either Folklore or Politics. The Celebrate Holiday Activity is limited to 1/Turn, but applies to all holidays within that month. Attempt a basic check, but if your kingdom Celebrated a Holiday the previous turn, the DC increases by 4, as your kingdom hasn’t had a chance to recover from the previous gala.</p>",
         "criticalSuccess": {
           "msg": "<p>Your holidays are a delight to your people. The event is expensive, but incidental income from the celebrants covers the cost. You gain a +2 circumstance bonus to Loyalty-based checks until the end of your next Kingdom turn.</p>",
           "modifiers": {
@@ -2786,7 +2786,7 @@
       },
       "clear-hex": {
         "title": "Clear Hex",
-        "description": "<p>You organize a team to excavate ruins, clear out dangerous wildlife, drain an infested marsh, or otherwise remove feature from a claimed hex that makes it dangerous or inhospitable. Choose a terrain feature in a single hex claimed by your kingdom and then attempt a basic Engineering or Exploration check. You cannot Use the Establish Settlement and Clear Hex activities on the same hex in the same Turn.</p><p>On all results, the hex loses the feature, but additional effects can occur depending on your degree of success.</p>",
+        "description": "<p>Engineers and mercenaries attempt to prepare a hex to serve as the site for a settlement, or they work to remove an existing improvement, a dangerous hazard, or an encounter.</p> <p>If you’re trying to prepare a hex for a settlement or demolish an improvement you previously built (or that was already present in the hex), spend RP as determined by the hex’s most inhospitable terrain feature:</p> <ul> <li><b>Mountains</b>: @lose12ResourcePoints</li> <li><b>Swamps</b>: @lose8ResourcePoints</li> <li><b>Forests</b>: @lose4ResourcePoints</li> <li><b>Hills</b>: @lose2ResourcePoints</li> <li><b>Plains</b>: @lose1ResourcePoints</li> </ul> <p>Then attempt a basic Engineering check. If you’re trying to remove a hazard or encounter, instead attempt an Exploration check. The DC of this check is set by the highest level creature or hazard in the hex (as set by Table 10–5: DCs by Level, on page 503 of the Pathfinder Core Rulebook).</p><p>If the hex you’re attempting to Clear has existing Ruins or an existing Structure, your action doesn’t physically remove the buildings from the area and you can later incorporate these buildings (or repair ruined ones) into a Settlement you build here later. Regardless of the skill used, increase the basic DC by 2 if the hex to be cleared is not yet part of your kingdom. You cannot Use the Establish Settlement and Clear Hex activities on the same hex in the same Turn.</p>",
         "modifiers": {
           "notPartOfKingdom": {
             "name": "Hex is not part of your kingdom",
@@ -2808,7 +2808,7 @@
       },
       "collect-taxes": {
         "title": "Collect Taxes",
-        "description": "<p>You establish a tax for settlers, impose a levy on trade, tariff certain goods, collect fees to cross bridges, tax heads of livestock, or otherwise collect money and goods from your citizenry. The Collect Taxes activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic Trade check. Taxation leaves folk notably less happy, so you may want to compensate for Unrest or other consequences with additional activities like Celebrate Holiday or Improve Lifestyle.</p>",
+        "description": "<p>Tax collectors travel through the lands to collect funds for the betterment of the kingdom. The Collect Taxes activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic check. If you don’t attempt to Collect Taxes, you can instead attempt a @Check[dc:11|type:flat]; on a success, @lose1Unrest.</p>",
         "criticalSuccess": {
           "msg": "<p>Your tax collectors are wildly successful! For the remainder of the Kingdom turn, gain a +2 circumstance bonus to Economy-based checks.</p>",
           "modifiers": {
@@ -3026,7 +3026,7 @@
       },
       "establish-settlement": {
         "title": "Establish Settlement",
-        "description": "<p>You draw up blueprints and begin constructing a brand-new settlement in a claimed hex. Spend RP as determined by the hex's most inhospitable terrain feature, then attempt a basic Engineering, Industry, Politics, or Scholarship check. You cannot Use the Establish Settlement and Clear Hex activities on the same hex in the same Turn.</p><p><em>Caution:</em> If you are using the Exploration mode Hexploration variant rule, you must have fully explored the hex with the Survey activity before you can establish a settlement in it. Surveying a hex is not enough.</p>",
+        "description": "<p>You draw up plans, gather resources, entice citizens, and establish boundaries to found a brand new settlement in the hex. Attempt a basic Engineering, Industry, Politics, or Scholarship check. If you cannot pay the RP required by the result of this check, treat your result as a critical failure. A settlement always starts as a village. You cannot Use the Establish Settlement and Clear Hex activities on the same hex in the same Turn.</p>",
         "requirement": "The hex in which you’re establishing the settlement has been Cleared and doesn’t currently have a settlement (including a Freehold) in it.",
         "criticalSuccess": {
           "msg": "<p>You establish the settlement largely with the aid of enthusiastic volunteers. @lose1d6ResourcePoints</p>"
@@ -3193,7 +3193,7 @@
       },
       "focused-attention": {
         "title": "Focused Attention",
-        "description": "<p>You set aside time to focus attention on aiding another leader in an activity. Choose another leader and a Kingdom skill, then attempt a DC 15 check using the chosen skill. On a success, you grant that leader a +2 circumstance bonus to one kingdom check using that skill, provided that leader attempts the skill check during the same Kingdom turn. The Cooperative Leadership Kingdom feat increases the efficiency of this activity. Focused Attention does not require spending the additional action normally required when making a check for a skill that is not one of a Leader's Specialized Skills. Focused Attention also does not generate Ruin or Unrest on a Critical Failure.</p>",
+        "description": "<p>You set aside time to focus attention on aiding another leader in an activity. Choose another leader and a Kingdom skill, then attempt a DC 15 check using the chosen skill. On a success, you grant that leader a +2 circumstance bonus to one kingdom check using that skill, provided that leader attempts the skill check during the same Kingdom turn.The Cooperative Leadership Kingdom feat increases the efficiency of this activity. Focused Attention does not require spending the additional action normally required when making a check for a skill that is not one of a Leader's Specialized Skills. Focused Attention also does not generate Ruin or Unrest on a Critical Failure.</p>",
         "criticalSuccess": {
           "msg": "<p>You grant that leader a +2 circumstance bonus to one kingdom check using that skill, provided that leader attempts the skill check during the same Kingdom turn</p>",
           "modifiers": {
@@ -3232,7 +3232,7 @@
       },
       "fortify-hex": {
         "title": "Fortify Hex",
-        "description": "<p>You shift your kingdom into a defensive posture, improving guards, scouts, and allocation of resources in a single claimed hex. Attempt a basic Defense check. The Fortify Hex Activity gives a Hex the Refuge terrain feature. If a Settlement is later established in the Hex, the GM may allow the Refuge to be converted to a free or discounted appropriate Structure, such as a Barracks. Any free Structure should not exceed one Resource Die. For a discounted Structure, the GM can choose how much to discount it but the discount should not be more than one Resource Die and/or two Commodities. The Kingdom must pay any remaining RP and Commodities. The new settlement then starts with the Structure.</p>",
+        "description": "<p>Your command your engineers to construct a protected encampment, such as a fort or barbican, to serve as a defensive post in the hex. Spend RP as determined by the hex’s most inhospitable terrain:</p> <ul> <li><b>Mountains</b>: @lose12ResourcePoints</li> <li><b>Swamps</b>: @lose8ResourcePoints</li> <li><b>Forests</b>: @lose4ResourcePoints</li> <li><b>Hills</b>: @lose2ResourcePoints</li> <li><b>Plains</b>: @lose1ResourcePoints</li> </ul> <p>Then attempt a basic check. A fortified hex grants an additional bonus in warfare, but also gives traveling PCs a place to rest that prevents wandering monsters from interrupting their rest. The Fortify Hex Activity gives a Hex the Refuge terrain feature. If a Settlement is later established in the Hex, the GM may allow the Refuge to be converted to a free or discounted appropriate Structure, such as a Barracks. Any free Structure should not exceed one Resource Die. For a discounted Structure, the GM can choose how much to discount it but the discount should not be more than one Resource Die and/or two Commodities. The Kingdom must pay any remaining RP and Commodities. The new settlement then starts with the Structure.</p>",
         "requirement": "The target hex must be claimed by your kingdom and must not have a settlement in it.",
         "criticalSuccess": {
           "msg": "<p>You find a defensible position for your fortification and finish construction efficiently. Gain a refund of half the RP you spent to build in the hex, then @lose1Unrest</p>"
@@ -3365,7 +3365,7 @@
       },
       "improve-lifestyle": {
         "title": "Improve Lifestyle",
-        "description": "<p>You undertake building projects and subsidize improvements to make life better for your citizens. The Improve Lifestyle activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic Politics check.</p>",
+        "description": "<p>The Improve Lifestyle activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic check to draw upon your kingdom’s treasury to enhance the quality of life for your citizens. This activity can be taken only during the Commerce phase of a Kingdom turn</p>",
         "criticalSuccess": {
           "msg": "<p>Your push to Improve Lifestyles affords your citizens significant free time to pursue recreational activities. For the remainder of the Kingdom turn, you gain a +2 circumstance bonus to Culture-based checks.</p>",
           "modifiers": {
@@ -3449,7 +3449,7 @@
       },
       "manage-trade-agreements": {
         "title": "Manage Trade Agreements",
-        "description": "<p>You play politics and build trade agreements with other nations to secure trade routes and financial aid. The Manage Trade Agreements activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic Trade check. If you've used this activity during the previous turn, the DC increases by 5 until you go a turn without taking this activity.</p>",
+        "description": "<p>The Manage Trade Agreements activity is limited to once per Kingdom Turn and gains the Leadership Trait. You send agents out to attend to established trade agreements. @loseMultiple2ResourcePoints per Trade Agreement you wish to manage. Then attempt a basic check. If you Managed Trade Agreements on the previous turn, increase this DC by 5.</p>",
         "modifiers": {
           "previousTurn": {
             "buttonLabel": "+5 DC Increase When Managing Trade Agreements on Next Turn",
@@ -3503,7 +3503,7 @@
       },
       "new-leadership": {
         "title": "New Leadership",
-        "description": "<p>You give a new role to one of your existing leaders (reassigning a PC to a new role), or someone new joins your kingdom in a leadership role. Choose a kingdom skill and then attempt a basic check using that skill (typically Intrigue, Politics, Statecraft, or Warfare, but other options may be available at the GM's discretion). On the Turn a new Leader is appointed, that Leader gains one fewer actions to spend during that Kingdom Turn: two for PCs, and one for NPCs.</p>",
+        "description": "<p>You announce the promotion of a character into a leadership role, whether they’re a newly appointed leader or just shifting from one leadership role to another. You normally perform this activity at the start of a Kingdom turn, but if unexpected events (such as the death of the character) remove a leader from a leadership role, you may immediately use the New Leadership activity to attempt to assign a new leader to that role, even outside of a Kingdom turn (applying the vacancy penalty for that role as appropriate). Attempt a basic Intrigue, Politics, Statecraft, or Warfare skill check—while any of these skills can be used, each skill is particularly suited to assigning two specific leadership roles.</p><ul><li><b>Intrigue</b>: Grants a +2 circumstance bonus to checks to assign Emissaries and Treasurers.</li><li><b>Politics</b>: Grants a +2 circumstance bonus to checks to assign Counselors and Rulers.</li><li><b>Statecraft</b>: Grants a +2 circumstance bonus to checks to assign Magisters and Viceroys.</li><li><b>Warfare</b>: Grants a +2 circumstance bonus to checks to assign Generals and Wardens.</li></ul><p>Rulers are particularly difficult to assign; when you take this activity to assign a new Ruler, you take a –4 circumstance penalty to the skill check, and unless you achieve a critical success, you @gain1Unrest.</p><p>Whether or not you are simultaneously assigning a leader, you may also use this activity to attempt to reselect the four leadership roles that you have invested. Any result other than a critical failure allows this. On the Turn a new Leader is appointed, that Leader gains one fewer actions to spend during that Kingdom Turn: two for PCs, and one for NPCs.</p>",
         "modifiers": {
           "appointingRulerPenalty": {
             "name": "-4 Circumstance When Appointing Ruler"
@@ -4299,7 +4299,7 @@
       },
       "tap-treasury": {
         "title": "Tap Treasury",
-        "description": "<p>You tap into the resources you have saved to fuel your kingdom's economy. The Tap Treasury activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic Statecraft check, and track the number of consecutive turns you've used this activity. Each time you use Tap Treasury after the first, the DC increases by 2. Every turn you go without using Tap Treasury, the DC decreases by 1 (to a minimum of your Control DC).</p>",
+        "description": "<p>You tap into the cash reserves of your kingdom for the PCs’ personal use or to provide emergency funding for an event. The Tap Treasury activity is limited to once per Kingdom Turn and gains the Leadership Trait. This is a basic check, but after you succeed or critically succeed at this activity, all future attempts to Tap Treasury have their results worsened two degrees. This penalty persists until funds equal to those taken from the treasury are repaid via Capital Investment</p>",
         "criticalSuccess": {
           "msg": "<p>You withdraw funds equal to the Currency per Additional PC column on Table 10–9: Party Treasure By Level @UUID[Compendium.pf2e.journals.JournalEntry.S55aqwWIzpQRFhcq.JournalEntryPage.Dae8LHdXZuBv06Jk]{Treasure}, or you successfully fund the unexpected event that required you to Tap your Treasury.</p>",
           "modifiers": {
@@ -4351,7 +4351,7 @@
       },
       "trade-commodities": {
         "title": "Trade Commodities",
-        "description": "<p>You arrange for shipments of Commodities from other worlds to arrive via portals, or for your harvested Commodities to be shipped off-world in exchange for gold. The Trade Commodities activity is limited to once per Kingdom Turn and gains the Leadership Trait. Attempt a basic Industry check.</p>",
+        "description": "<p>The Trade Commodities activity is limited to once per Kingdom Turn and gains the Leadership Trait. There are five different categories of Commodities: Food, Lumber, Luxuries, Ore, and Stone. When you Trade Commodities, select one Commodity that your kingdom currently stockpiles and reduce that Commodity’s stockpile by up to 4. Then attempt a basic check. If you trade with a group that you’ve established diplomatic relations with, you gain a +1 circumstance bonus to the check.</p>",
         "modifiers": {
           "establishedRelations": {
             "name": "Trading with a group with established diplomatic relationships",
