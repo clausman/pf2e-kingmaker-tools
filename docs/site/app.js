@@ -238,32 +238,30 @@ function renderActivity(activity) {
     const skillsWithLabels = [];
     if (activity.skills) {
         for (const [skill, rank] of Object.entries(activity.skills)) {
-            if (rank > 0 || Object.keys(activity.skills).length === 1) {
-                const skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
-                skills.push(skillName);
-                
-                // Add proficiency label for ranks > 0
-                let proficiencyLabel = '';
-                let proficiencyColor = '';
-                if (rank === 1) {
-                    proficiencyLabel = 'T';
-                    proficiencyColor = 'bg-blue-500 text-white';
-                } else if (rank === 2) {
-                    proficiencyLabel = 'E';
-                    proficiencyColor = 'bg-green-500 text-white';
-                } else if (rank === 3) {
-                    proficiencyLabel = 'M';
-                    proficiencyColor = 'bg-purple-500 text-white';
-                } else if (rank === 4) {
-                    proficiencyLabel = 'L';
-                    proficiencyColor = 'bg-orange-500 text-white';
-                }
-                
-                if (proficiencyLabel) {
-                    skillsWithLabels.push(`<span class="inline-flex items-center gap-1"><span class="text-xs font-bold px-1.5 py-0.5 rounded ${proficiencyColor}">${proficiencyLabel}</span>${skillName}</span>`);
-                } else {
-                    skillsWithLabels.push(skillName);
-                }
+            const skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
+            skills.push(skillName);
+            
+            // Add proficiency label for ranks > 0
+            let proficiencyLabel = '';
+            let proficiencyColor = '';
+            if (rank === 1) {
+                proficiencyLabel = 'T';
+                proficiencyColor = 'bg-blue-500 text-white';
+            } else if (rank === 2) {
+                proficiencyLabel = 'E';
+                proficiencyColor = 'bg-green-500 text-white';
+            } else if (rank === 3) {
+                proficiencyLabel = 'M';
+                proficiencyColor = 'bg-purple-500 text-white';
+            } else if (rank === 4) {
+                proficiencyLabel = 'L';
+                proficiencyColor = 'bg-orange-500 text-white';
+            }
+            
+            if (proficiencyLabel) {
+                skillsWithLabels.push(`<span class="inline-flex items-center gap-0.5"><span class="text-xs font-bold px-1 py-0 rounded ${proficiencyColor}">${proficiencyLabel}</span>${skillName}</span>`);
+            } else {
+                skillsWithLabels.push(skillName);
             }
         }
     }
