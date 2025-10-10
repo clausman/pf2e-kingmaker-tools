@@ -186,11 +186,20 @@ function renderActivities() {
 function renderPhaseSection(phase, activities) {
     const phaseTitle = phase.charAt(0).toUpperCase() + phase.slice(1);
     
+    // Add special subheading for Region and Civic phases
+    let subheading = '';
+    if (phase === 'region') {
+        subheading = '<span class="text-sm font-normal italic text-gray-600 ml-2">once per Hex</span>';
+    } else if (phase === 'civic') {
+        subheading = '<span class="text-sm font-normal italic text-gray-600 ml-2">once per Settlement</span>';
+    }
+    
     let html = `
         <div class="phase-section">
-            <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2 flex-wrap">
                 <span class="phase-${phase} px-3 py-1 rounded-full text-white text-sm">${phaseTitle}</span>
                 <span class="text-sm font-normal text-gray-500">(${activities.length})</span>
+                ${subheading}
             </h2>
             <div class="space-y-2">
     `;
@@ -248,74 +257,72 @@ function renderActivity(activity) {
     return `
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden activity-card" data-phase="${activity.phase}" data-id="${activity.id}">
             <details class="group">
-                <summary class="p-4 hover:bg-gray-50 transition-colors">
-                    <div class="flex items-start gap-2">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                ${actionGlyphs}
-                                <h3 class="font-semibold text-gray-900">${title}</h3>
-                                ${fortuneIndicator}
-                                ${oncePerRound}
-                            </div>
-                            ${skillsText ? `<div class="mt-1">${skillsText}</div>` : ''}
-                            ${dcType ? `<div class="text-sm text-gray-600 mt-1">${dcType}</div>` : ''}
+                <summary class="p-3 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                            ${actionGlyphs}
+                            <h3 class="font-semibold text-gray-900 text-sm truncate">${title}</h3>
+                            ${fortuneIndicator}
+                            ${oncePerRound}
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-500 shrink-0">
+                            ${skillsText ? `<span class="hidden sm:inline">${skills.join(', ')}</span>` : ''}
+                            ${dcType ? `<span class="text-xs">${dcType.replace(' DC', '')}</span>` : ''}
                         </div>
                     </div>
                 </summary>
                 
-                <div class="p-4 pt-0 border-t border-gray-100">
-                    <div class="prose prose-sm max-w-none">
-                        <div class="mb-4">
-                            <h4 class="text-sm font-semibold text-gray-700 mb-1">Description</h4>
-                            <div class="text-gray-600">${description}</div>
+                <div class="px-3 pb-3 pt-2 border-t border-gray-100">
+                    <div class="prose prose-sm max-w-none text-sm">
+                        <div class="mb-3">
+                            <div class="text-gray-700 leading-snug">${description}</div>
                         </div>
                         
                         ${requirement ? `
-                            <div class="mb-4">
-                                <h4 class="text-sm font-semibold text-gray-700 mb-1">Requirement</h4>
-                                <div class="text-gray-600">${requirement}</div>
+                            <div class="mb-2">
+                                <span class="text-xs font-semibold text-gray-600 uppercase">Requirement:</span>
+                                <span class="text-gray-700 text-xs">${requirement}</span>
                             </div>
                         ` : ''}
                         
                         ${special ? `
-                            <div class="mb-4">
-                                <h4 class="text-sm font-semibold text-gray-700 mb-1">Special</h4>
-                                <div class="text-gray-600">${special}</div>
+                            <div class="mb-2">
+                                <span class="text-xs font-semibold text-gray-600 uppercase">Special:</span>
+                                <span class="text-gray-700 text-xs">${special}</span>
                             </div>
                         ` : ''}
                         
                         ${automationNotes ? `
-                            <div class="mb-4">
-                                <h4 class="text-sm font-semibold text-gray-700 mb-1">Automation Notes</h4>
-                                <div class="text-gray-600 text-xs italic">${automationNotes}</div>
+                            <div class="mb-2">
+                                <span class="text-xs font-semibold text-gray-600 uppercase">Automation:</span>
+                                <span class="text-gray-600 text-xs italic">${automationNotes}</span>
                             </div>
                         ` : ''}
                         
                         ${criticalSuccess || success || failure || criticalFailure ? `
-                            <div class="mt-4 space-y-2">
-                                <h4 class="text-sm font-semibold text-gray-700">Outcomes</h4>
+                            <div class="mt-3 space-y-1.5">
                                 ${criticalSuccess ? `
-                                    <div class="border-l-4 border-green-500 pl-3 py-1">
-                                        <div class="text-xs font-semibold text-green-700 uppercase">Critical Success</div>
-                                        <div class="text-gray-600 text-sm">${criticalSuccess}</div>
+                                    <div class="border-l-2 border-green-500 pl-2 py-0.5">
+                                        <div class="text-xs font-semibold text-green-700">Critical Success</div>
+                                        <div class="text-gray-700 text-xs leading-snug">${criticalSuccess}</div>
                                     </div>
                                 ` : ''}
                                 ${success ? `
-                                    <div class="border-l-4 border-blue-500 pl-3 py-1">
-                                        <div class="text-xs font-semibold text-blue-700 uppercase">Success</div>
-                                        <div class="text-gray-600 text-sm">${success}</div>
+                                    <div class="border-l-2 border-blue-500 pl-2 py-0.5">
+                                        <div class="text-xs font-semibold text-blue-700">Success</div>
+                                        <div class="text-gray-700 text-xs leading-snug">${success}</div>
                                     </div>
                                 ` : ''}
                                 ${failure ? `
-                                    <div class="border-l-4 border-orange-500 pl-3 py-1">
-                                        <div class="text-xs font-semibold text-orange-700 uppercase">Failure</div>
-                                        <div class="text-gray-600 text-sm">${failure}</div>
+                                    <div class="border-l-2 border-orange-500 pl-2 py-0.5">
+                                        <div class="text-xs font-semibold text-orange-700">Failure</div>
+                                        <div class="text-gray-700 text-xs leading-snug">${failure}</div>
                                     </div>
                                 ` : ''}
                                 ${criticalFailure ? `
-                                    <div class="border-l-4 border-red-500 pl-3 py-1">
-                                        <div class="text-xs font-semibold text-red-700 uppercase">Critical Failure</div>
-                                        <div class="text-gray-600 text-sm">${criticalFailure}</div>
+                                    <div class="border-l-2 border-red-500 pl-2 py-0.5">
+                                        <div class="text-xs font-semibold text-red-700">Critical Failure</div>
+                                        <div class="text-gray-700 text-xs leading-snug">${criticalFailure}</div>
                                     </div>
                                 ` : ''}
                             </div>
