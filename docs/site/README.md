@@ -24,6 +24,26 @@ This website provides an easy-to-use interface for quickly looking up Kingdom Ac
 
 ### Running Locally
 
+**Quick Setup (using setup script):**
+
+```bash
+# 1. Build the project to generate JSON data files
+./gradlew combineJsonFiles
+
+# 2. Run the setup script
+cd docs/site
+./setup.sh
+
+# 3. Start the web server
+python3 -m http.server 8080
+```
+
+Then open your browser to `http://localhost:8080`
+
+**Manual Setup:**
+
+If you prefer to set up manually:
+
 1. Build the project to generate the JSON data files:
    ```bash
    ./gradlew combineJsonFiles
