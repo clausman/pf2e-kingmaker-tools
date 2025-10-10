@@ -1,6 +1,6 @@
 {
   "id": "celebrate-holiday",
-  "oncePerRound": false,
+  "oncePerRound": true,
   "fortune": false,
   "enabled": true,
   "phase": "leadership",
@@ -8,7 +8,8 @@
   "title": "activities.celebrate-holiday.title",
   "description": "activities.celebrate-holiday.description",
   "skills": {
-    "folklore": 0
+    "folklore": 0,
+    "politics": 0
   },
   "criticalSuccess": {
     "msg": "activities.celebrate-holiday.criticalSuccess.msg",

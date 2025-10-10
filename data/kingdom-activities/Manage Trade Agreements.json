@@ -1,7 +1,7 @@
 {
   "id": "manage-trade-agreements",
   "order": 5,
-  "oncePerRound": false,
+  "oncePerRound": true,
   "fortune": false,
   "enabled": true,
   "phase": "commerce",

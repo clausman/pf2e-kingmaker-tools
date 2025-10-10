@@ -4,7 +4,7 @@
   "fortune": false,
   "enabled": true,
   "phase": "leadership",
-  "dc": 20,
+  "dc": 15,
   "title": "activities.focused-attention.title",
   "description": "activities.focused-attention.description",
   "skills": {

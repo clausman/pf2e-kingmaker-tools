@@ -1,7 +1,7 @@
 {
   "id": "tap-treasury",
   "order": 3,
-  "oncePerRound": false,
+  "oncePerRound": true,
   "fortune": false,
   "enabled": true,
   "phase": "commerce",

@@ -1,7 +1,7 @@
 {
   "order": 1,
   "id": "collect-taxes",
-  "oncePerRound": false,
+  "oncePerRound": true,
   "fortune": false,
   "enabled": true,
   "phase": "commerce",
