@@ -89,10 +89,10 @@
     <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
             <nav class="flex border-b border-gray-200">
-                <button class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-blue-600 text-blue-600" data-tab="activities">
+                <button class="tab-button active flex-1 px-4 py-3 text-sm font-medium border-b-2 border-blue-600 text-blue-600 transition-colors" data-tab="activities">
                     Activities
                 </button>
-                <button class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="settings">
+                <button class="tab-button flex-1 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors" data-tab="settings">
                     Settings
                 </button>
             </nav>
@@ -165,50 +165,42 @@
     <!-- Settings Tab -->
     <div id="settingsTab" class="tab-content hidden">
         <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="bg-white rounded-lg shadow-sm p-6 space-y-8">
-                <div>
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Kingdom Settings</h2>
-                    <p class="text-sm text-gray-600 mb-6">Configure proficiency levels and DC values for your kingdom. These settings are saved locally in your browser.</p>
+            <div class="bg-white rounded-lg shadow-sm p-4 md:p-6">
+                <!-- Control DC Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Control DC</h3>
+                    <p class="text-xs text-gray-600 mb-3">Set the base Control DC for your kingdom.</p>
+                    <input 
+                        type="number" 
+                        id="controlDC" 
+                        class="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        placeholder="Enter Control DC"
+                        min="0"
+                        value="14"
+                    />
                 </div>
 
-                <!-- Control DC -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Control DC</h3>
-                    <div class="max-w-xs">
-                        <label for="controlDC" class="block text-sm font-medium text-gray-700 mb-2">
-                            Control DC Value
-                        </label>
-                        <input 
-                            type="number" 
-                            id="controlDC" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Enter Control DC"
-                            min="0"
-                        />
-                    </div>
-                </div>
-
-                <!-- Leader Proficiency -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Leader Proficiency</h3>
-                    <p class="text-sm text-gray-600 mb-4">Set the proficiency level for each skill when used by a leader.</p>
-                    <div id="leaderProficiencyContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Leader Proficiency Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Leader Proficiency</h3>
+                    <p class="text-xs text-gray-600 mb-3">Set proficiency for each skill when used by a leader.</p>
+                    <div id="leaderProficiencyContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                         <!-- Will be populated by JavaScript -->
                     </div>
                 </div>
 
-                <!-- Kingdom Proficiency -->
-                <div class="pb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Kingdom Proficiency</h3>
-                    <p class="text-sm text-gray-600 mb-4">Set the proficiency level for each kingdom skill.</p>
-                    <div id="kingdomProficiencyContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Kingdom Proficiency Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Kingdom Proficiency</h3>
+                    <p class="text-xs text-gray-600 mb-3">Set proficiency for each kingdom skill.</p>
+                    <div id="kingdomProficiencyContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                         <!-- Will be populated by JavaScript -->
                     </div>
                 </div>
 
                 <!-- Save Button -->
-                <div class="flex justify-end pt-4 border-t border-gray-200">
-                    <button id="saveSettings" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium">
+                <div class="flex justify-center pt-4 border-t border-gray-200">
+                    <button id="saveSettings" class="w-full sm:w-auto px-8 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
                         Save Settings
                     </button>
                 </div>

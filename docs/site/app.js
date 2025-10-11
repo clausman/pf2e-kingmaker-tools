@@ -470,36 +470,48 @@ function renderSettingsUI() {
     const leaderContainer = document.getElementById('leaderProficiencyContainer');
     const kingdomContainer = document.getElementById('kingdomProficiencyContainer');
     
-    // Render leader proficiency selects
+    // Render leader proficiency radio buttons
     leaderContainer.innerHTML = kingdomSkills.map(skill => {
         const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
         return `
-            <div>
-                <label for="leader_${skill}" class="block text-sm font-medium text-gray-700 mb-1">
-                    ${skillLabel}
-                </label>
-                <select id="leader_${skill}" class="leader-proficiency w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-skill="${skill}">
-                    ${PROFICIENCY_LEVELS.map(level => 
-                        `<option value="${level.value}">${level.label}</option>`
-                    ).join('')}
-                </select>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="text-sm font-medium text-gray-900 mb-3">${skillLabel}</div>
+                <div class="space-y-2">
+                    ${PROFICIENCY_LEVELS.map(level => `
+                        <label class="flex items-center cursor-pointer">
+                            <input 
+                                type="radio" 
+                                name="leader_${skill}" 
+                                value="${level.value}"
+                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700">${level.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
             </div>
         `;
     }).join('');
     
-    // Render kingdom proficiency selects
+    // Render kingdom proficiency radio buttons
     kingdomContainer.innerHTML = kingdomSkills.map(skill => {
         const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
         return `
-            <div>
-                <label for="kingdom_${skill}" class="block text-sm font-medium text-gray-700 mb-1">
-                    ${skillLabel}
-                </label>
-                <select id="kingdom_${skill}" class="kingdom-proficiency w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-skill="${skill}">
-                    ${PROFICIENCY_LEVELS.map(level => 
-                        `<option value="${level.value}">${level.label}</option>`
-                    ).join('')}
-                </select>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="text-sm font-medium text-gray-900 mb-3">${skillLabel}</div>
+                <div class="space-y-2">
+                    ${PROFICIENCY_LEVELS.map(level => `
+                        <label class="flex items-center cursor-pointer">
+                            <input 
+                                type="radio" 
+                                name="kingdom_${skill}" 
+                                value="${level.value}"
+                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700">${level.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
             </div>
         `;
     }).join('');
@@ -507,10 +519,12 @@ function renderSettingsUI() {
 
 // Load settings from localStorage
 function loadSettings() {
-    // Load Control DC
+    // Load Control DC with default value of 14
     const controlDC = localStorage.getItem(SETTINGS_KEYS.CONTROL_DC);
-    if (controlDC !== null) {
-        document.getElementById('controlDC').value = controlDC;
+    const dcValue = controlDC !== null ? controlDC : '14';
+    document.getElementById('controlDC').value = dcValue;
+    if (controlDC === null) {
+        localStorage.setItem(SETTINGS_KEYS.CONTROL_DC, '14');
     }
     
     // Load Leader Proficiency
@@ -518,10 +532,15 @@ function loadSettings() {
     if (leaderProficiency) {
         const settings = JSON.parse(leaderProficiency);
         Object.entries(settings).forEach(([skill, value]) => {
-            const element = document.getElementById(`leader_${skill}`);
-            if (element) {
-                element.value = value;
+            const radio = document.querySelector(`input[name="leader_${skill}"][value="${value}"]`);
+            if (radio) {
+                radio.checked = true;
             }
+        });
+    } else {
+        // Set all to Untrained (0) by default
+        document.querySelectorAll('input[name^="leader_"][value="0"]').forEach(radio => {
+            radio.checked = true;
         });
     }
     
@@ -530,10 +549,15 @@ function loadSettings() {
     if (kingdomProficiency) {
         const settings = JSON.parse(kingdomProficiency);
         Object.entries(settings).forEach(([skill, value]) => {
-            const element = document.getElementById(`kingdom_${skill}`);
-            if (element) {
-                element.value = value;
+            const radio = document.querySelector(`input[name="kingdom_${skill}"][value="${value}"]`);
+            if (radio) {
+                radio.checked = true;
             }
+        });
+    } else {
+        // Set all to Untrained (0) by default
+        document.querySelectorAll('input[name^="kingdom_"][value="0"]').forEach(radio => {
+            radio.checked = true;
         });
     }
 }
@@ -546,15 +570,21 @@ function saveSettings() {
     
     // Save Leader Proficiency
     const leaderProficiency = {};
-    document.querySelectorAll('.leader-proficiency').forEach(select => {
-        leaderProficiency[select.dataset.skill] = parseInt(select.value);
+    kingdomSkills.forEach(skill => {
+        const radio = document.querySelector(`input[name="leader_${skill}"]:checked`);
+        if (radio) {
+            leaderProficiency[skill] = parseInt(radio.value);
+        }
     });
     localStorage.setItem(SETTINGS_KEYS.LEADER_PROFICIENCY, JSON.stringify(leaderProficiency));
     
     // Save Kingdom Proficiency
     const kingdomProficiency = {};
-    document.querySelectorAll('.kingdom-proficiency').forEach(select => {
-        kingdomProficiency[select.dataset.skill] = parseInt(select.value);
+    kingdomSkills.forEach(skill => {
+        const radio = document.querySelector(`input[name="kingdom_${skill}"]:checked`);
+        if (radio) {
+            kingdomProficiency[skill] = parseInt(radio.value);
+        }
     });
     localStorage.setItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY, JSON.stringify(kingdomProficiency));
     
@@ -575,7 +605,7 @@ function saveSettings() {
 // Get settings (for use in other tabs)
 function getSettings() {
     return {
-        controlDC: parseInt(localStorage.getItem(SETTINGS_KEYS.CONTROL_DC)) || 0,
+        controlDC: parseInt(localStorage.getItem(SETTINGS_KEYS.CONTROL_DC)) || 14,
         leaderProficiency: JSON.parse(localStorage.getItem(SETTINGS_KEYS.LEADER_PROFICIENCY) || '{}'),
         kingdomProficiency: JSON.parse(localStorage.getItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY) || '{}')
     };
