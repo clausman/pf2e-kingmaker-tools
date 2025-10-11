@@ -308,7 +308,7 @@ function renderActivity(activity) {
     
     // Determine action cost indicator (1 action if meets requirements, 2 actions if doesn't)
     const actionCostIndicator = hasSkillRequirement ? 
-        (meetsRequirements ? '<span class="activity-action-cost">1A</span>' : '<span class="activity-action-cost">2A</span>') : '';
+        (meetsRequirements ? '<span class="activity-action-cost">A</span>' : '<span class="activity-action-cost">D</span>') : '';
     
     // Determine if activity should be greyed out
     const unavailableClass = (hasSkillRequirement && !meetsRequirements) ? 'activity-unavailable' : '';

@@ -9,6 +9,14 @@
         <link rel="stylesheet" href="styles.css">
     </noscript>
     <style>
+        /* Pathfinder Icons Font */
+        @font-face {
+            font-family: 'Pathfinder-Icons';
+            src: url('Pathfinder-Icons.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
         /* Custom action glyphs */
         .action-glyph {
             display: inline-flex;
@@ -29,15 +37,11 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 1.25rem;
-            height: 1.25rem;
-            border-radius: 50%;
-            background: #5e0000;
-            color: white;
-            font-weight: bold;
-            font-size: 0.6rem;
+            font-family: 'Pathfinder-Icons', sans-serif;
+            font-size: 1.25rem;
             margin-left: 0.25rem;
             flex-shrink: 0;
+            color: #5e0000;
         }
         
         /* Greyed out activities */
