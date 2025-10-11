@@ -3,6 +3,23 @@ let allActivities = [];
 let translations = {};
 let currentPhaseFilter = 'all';
 let currentSearchTerm = '';
+let kingdomSkills = [];
+
+// Settings keys for localStorage
+const SETTINGS_KEYS = {
+    CONTROL_DC: 'kingmaker_control_dc',
+    LEADER_PROFICIENCY: 'kingmaker_leader_proficiency',
+    KINGDOM_PROFICIENCY: 'kingmaker_kingdom_proficiency'
+};
+
+// Proficiency levels
+const PROFICIENCY_LEVELS = [
+    { value: 0, label: 'Untrained' },
+    { value: 1, label: 'Trained' },
+    { value: 2, label: 'Expert' },
+    { value: 3, label: 'Master' },
+    { value: 4, label: 'Legendary' }
+];
 
 // Load data
 async function loadData() {
@@ -19,6 +36,15 @@ async function loadData() {
         allActivities = activitiesData.filter(activity => activity.enabled !== false);
         translations = translationsData['pf2e-kingmaker-tools'];
         
+        // Extract unique kingdom skills from activities
+        const skillsSet = new Set();
+        allActivities.forEach(activity => {
+            if (activity.skills) {
+                Object.keys(activity.skills).forEach(skill => skillsSet.add(skill));
+            }
+        });
+        kingdomSkills = Array.from(skillsSet).sort();
+        
         // Sort activities by order (if available) and then by title
         allActivities.sort((a, b) => {
             if (a.order && b.order) return a.order - b.order;
@@ -29,6 +55,7 @@ async function loadData() {
         
         renderActivities();
         setupEventListeners();
+        initializeSettings();
         
         // Hide loading, show content
         document.getElementById('loadingState').classList.add('hidden');
@@ -396,6 +423,192 @@ function setupEventListeners() {
             renderActivities();
         });
     });
+    
+    // Tab switching
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const targetTab = e.target.dataset.tab;
+            switchTab(targetTab);
+        });
+    });
+    
+    // Save settings button
+    document.getElementById('saveSettings').addEventListener('click', saveSettings);
+}
+
+// Switch between tabs
+function switchTab(tabName) {
+    // Update button states
+    document.querySelectorAll('.tab-button').forEach(button => {
+        if (button.dataset.tab === tabName) {
+            button.classList.add('active', 'border-blue-600', 'text-blue-600');
+            button.classList.remove('border-transparent', 'text-gray-500');
+        } else {
+            button.classList.remove('active', 'border-blue-600', 'text-blue-600');
+            button.classList.add('border-transparent', 'text-gray-500');
+        }
+    });
+    
+    // Update tab content visibility
+    document.querySelectorAll('.tab-content').forEach(content => {
+        if (content.id === `${tabName}Tab`) {
+            content.classList.remove('hidden');
+        } else {
+            content.classList.add('hidden');
+        }
+    });
+}
+
+// Initialize settings UI
+function initializeSettings() {
+    renderSettingsUI();
+    loadSettings();
+}
+
+// Render settings UI
+function renderSettingsUI() {
+    const leaderContainer = document.getElementById('leaderProficiencyContainer');
+    const kingdomContainer = document.getElementById('kingdomProficiencyContainer');
+    
+    // Render leader proficiency radio buttons
+    leaderContainer.innerHTML = kingdomSkills.map(skill => {
+        const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
+        return `
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="text-sm font-medium text-gray-900 mb-3">${skillLabel}</div>
+                <div class="space-y-2">
+                    ${PROFICIENCY_LEVELS.map(level => `
+                        <label class="flex items-center cursor-pointer">
+                            <input 
+                                type="radio" 
+                                name="leader_${skill}" 
+                                value="${level.value}"
+                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700">${level.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Render kingdom proficiency radio buttons
+    kingdomContainer.innerHTML = kingdomSkills.map(skill => {
+        const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
+        return `
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="text-sm font-medium text-gray-900 mb-3">${skillLabel}</div>
+                <div class="space-y-2">
+                    ${PROFICIENCY_LEVELS.map(level => `
+                        <label class="flex items-center cursor-pointer">
+                            <input 
+                                type="radio" 
+                                name="kingdom_${skill}" 
+                                value="${level.value}"
+                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700">${level.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Load settings from localStorage
+function loadSettings() {
+    // Load Control DC with default value of 14
+    const controlDC = localStorage.getItem(SETTINGS_KEYS.CONTROL_DC);
+    const dcValue = controlDC !== null ? controlDC : '14';
+    document.getElementById('controlDC').value = dcValue;
+    if (controlDC === null) {
+        localStorage.setItem(SETTINGS_KEYS.CONTROL_DC, '14');
+    }
+    
+    // Load Leader Proficiency
+    const leaderProficiency = localStorage.getItem(SETTINGS_KEYS.LEADER_PROFICIENCY);
+    if (leaderProficiency) {
+        const settings = JSON.parse(leaderProficiency);
+        Object.entries(settings).forEach(([skill, value]) => {
+            const radio = document.querySelector(`input[name="leader_${skill}"][value="${value}"]`);
+            if (radio) {
+                radio.checked = true;
+            }
+        });
+    } else {
+        // Set all to Untrained (0) by default
+        document.querySelectorAll('input[name^="leader_"][value="0"]').forEach(radio => {
+            radio.checked = true;
+        });
+    }
+    
+    // Load Kingdom Proficiency
+    const kingdomProficiency = localStorage.getItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY);
+    if (kingdomProficiency) {
+        const settings = JSON.parse(kingdomProficiency);
+        Object.entries(settings).forEach(([skill, value]) => {
+            const radio = document.querySelector(`input[name="kingdom_${skill}"][value="${value}"]`);
+            if (radio) {
+                radio.checked = true;
+            }
+        });
+    } else {
+        // Set all to Untrained (0) by default
+        document.querySelectorAll('input[name^="kingdom_"][value="0"]').forEach(radio => {
+            radio.checked = true;
+        });
+    }
+}
+
+// Save settings to localStorage
+function saveSettings() {
+    // Save Control DC
+    const controlDC = document.getElementById('controlDC').value;
+    localStorage.setItem(SETTINGS_KEYS.CONTROL_DC, controlDC);
+    
+    // Save Leader Proficiency
+    const leaderProficiency = {};
+    kingdomSkills.forEach(skill => {
+        const radio = document.querySelector(`input[name="leader_${skill}"]:checked`);
+        if (radio) {
+            leaderProficiency[skill] = parseInt(radio.value);
+        }
+    });
+    localStorage.setItem(SETTINGS_KEYS.LEADER_PROFICIENCY, JSON.stringify(leaderProficiency));
+    
+    // Save Kingdom Proficiency
+    const kingdomProficiency = {};
+    kingdomSkills.forEach(skill => {
+        const radio = document.querySelector(`input[name="kingdom_${skill}"]:checked`);
+        if (radio) {
+            kingdomProficiency[skill] = parseInt(radio.value);
+        }
+    });
+    localStorage.setItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY, JSON.stringify(kingdomProficiency));
+    
+    // Show confirmation
+    const button = document.getElementById('saveSettings');
+    const originalText = button.textContent;
+    button.textContent = 'Saved!';
+    button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+    button.classList.add('bg-green-600', 'hover:bg-green-700');
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('bg-green-600', 'hover:bg-green-700');
+        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+    }, 2000);
+}
+
+// Get settings (for use in other tabs)
+function getSettings() {
+    return {
+        controlDC: parseInt(localStorage.getItem(SETTINGS_KEYS.CONTROL_DC)) || 14,
+        leaderProficiency: JSON.parse(localStorage.getItem(SETTINGS_KEYS.LEADER_PROFICIENCY) || '{}'),
+        kingdomProficiency: JSON.parse(localStorage.getItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY) || '{}')
+    };
 }
 
 // Initialize

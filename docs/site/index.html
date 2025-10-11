@@ -60,6 +60,20 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        
+        /* Tab styles */
+        .tab-button {
+            transition: all 0.2s;
+        }
+        .tab-button.active {
+            background-color: white;
+        }
+        .tab-content {
+            display: block;
+        }
+        .tab-content.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -71,63 +85,126 @@
         </div>
     </header>
 
-    <!-- Search and Filter -->
+    <!-- Tab Navigation -->
     <div class="max-w-7xl mx-auto px-4 py-4">
-        <div class="bg-white rounded-lg shadow-sm p-4 space-y-3">
-            <!-- Search Input -->
-            <div>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Search actions by name or description..." 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <nav class="flex border-b border-gray-200">
+                <button class="tab-button active flex-1 px-4 py-3 text-sm font-medium border-b-2 border-blue-600 text-blue-600 transition-colors" data-tab="activities">
+                    Activities
+                </button>
+                <button class="tab-button flex-1 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors" data-tab="settings">
+                    Settings
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Activities Tab -->
+    <div id="activitiesTab" class="tab-content">
+        <!-- Search and Filter -->
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="bg-white rounded-lg shadow-sm p-4 space-y-3">
+                <!-- Search Input -->
+                <div>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search actions by name or description..." 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                </div>
+                
+                <!-- Phase Filters -->
+                <div class="flex flex-wrap gap-2">
+                    <button class="phase-filter active px-3 py-1.5 rounded-full text-white text-sm font-medium bg-blue-600" data-phase="all">
+                        All Phases
+                    </button>
+                    <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-commerce" data-phase="commerce">
+                        Commerce
+                    </button>
+                    <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-leadership" data-phase="leadership">
+                        Leadership
+                    </button>
+                    <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-region" data-phase="region">
+                        Region
+                    </button>
+                    <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-civic" data-phase="civic">
+                        Civic
+                    </button>
+                    <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-army" data-phase="army">
+                        Army
+                    </button>
+                    <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-upkeep" data-phase="upkeep">
+                        Upkeep
+                    </button>
+                </div>
             </div>
-            
-            <!-- Phase Filters -->
-            <div class="flex flex-wrap gap-2">
-                <button class="phase-filter active px-3 py-1.5 rounded-full text-white text-sm font-medium bg-blue-600" data-phase="all">
-                    All Phases
-                </button>
-                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-commerce" data-phase="commerce">
-                    Commerce
-                </button>
-                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-leadership" data-phase="leadership">
-                    Leadership
-                </button>
-                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-region" data-phase="region">
-                    Region
-                </button>
-                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-civic" data-phase="civic">
-                    Civic
-                </button>
-                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-army" data-phase="army">
-                    Army
-                </button>
-                <button class="phase-filter px-3 py-1.5 rounded-full text-white text-sm font-medium phase-upkeep" data-phase="upkeep">
-                    Upkeep
-                </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="max-w-7xl mx-auto px-4 py-8">
+            <div class="text-center text-gray-600">
+                <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent rounded-full" role="status"></div>
+                <p class="mt-2">Loading kingdom actions...</p>
+            </div>
+        </div>
+
+        <!-- Activities List -->
+        <div id="activitiesList" class="max-w-7xl mx-auto px-4 py-4 space-y-4 hidden">
+            <!-- Activities will be inserted here -->
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="max-w-7xl mx-auto px-4 py-8 hidden">
+            <div class="text-center text-gray-600">
+                <p class="text-lg">No activities found matching your search.</p>
             </div>
         </div>
     </div>
 
-    <!-- Loading State -->
-    <div id="loadingState" class="max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center text-gray-600">
-            <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent rounded-full" role="status"></div>
-            <p class="mt-2">Loading kingdom actions...</p>
-        </div>
-    </div>
+    <!-- Settings Tab -->
+    <div id="settingsTab" class="tab-content hidden">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="bg-white rounded-lg shadow-sm p-4 md:p-6">
+                <!-- Control DC Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Control DC</h3>
+                    <p class="text-xs text-gray-600 mb-3">Set the base Control DC for your kingdom.</p>
+                    <input 
+                        type="number" 
+                        id="controlDC" 
+                        class="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        placeholder="Enter Control DC"
+                        min="0"
+                        value="14"
+                    />
+                </div>
 
-    <!-- Activities List -->
-    <div id="activitiesList" class="max-w-7xl mx-auto px-4 py-4 space-y-4 hidden">
-        <!-- Activities will be inserted here -->
-    </div>
+                <!-- Leader Proficiency Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Leader Proficiency</h3>
+                    <p class="text-xs text-gray-600 mb-3">Set proficiency for each skill when used by a leader.</p>
+                    <div id="leaderProficiencyContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
 
-    <!-- No Results Message -->
-    <div id="noResults" class="max-w-7xl mx-auto px-4 py-8 hidden">
-        <div class="text-center text-gray-600">
-            <p class="text-lg">No activities found matching your search.</p>
+                <!-- Kingdom Proficiency Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Kingdom Proficiency</h3>
+                    <p class="text-xs text-gray-600 mb-3">Set proficiency for each kingdom skill.</p>
+                    <div id="kingdomProficiencyContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-center pt-4 border-t border-gray-200">
+                    <button id="saveSettings" class="w-full sm:w-auto px-8 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        Save Settings
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
