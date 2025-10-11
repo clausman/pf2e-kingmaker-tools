@@ -308,7 +308,7 @@ function renderActivity(activity) {
     
     // Determine action cost indicator (1 action if meets requirements, 2 actions if doesn't)
     const actionCostIndicator = hasSkillRequirement ? 
-        (meetsRequirements ? '<span class="activity-action-cost">A</span>' : '<span class="activity-action-cost">D</span>') : '';
+        (meetsRequirements ? '<span class="activity-action-cost">[one-action]</span>' : '<span class="activity-action-cost">[two-action]</span>') : '';
     
     // Determine if activity should be greyed out
     const unavailableClass = (hasSkillRequirement && !meetsRequirements) ? 'activity-unavailable' : '';
@@ -333,7 +333,6 @@ function renderActivity(activity) {
                             <h3 class="font-semibold text-gray-900 text-sm truncate flex items-center gap-1">
                                 ${title}
                                 ${actionCostIndicator}
-                                <span class="text-gray-400 text-xs group-open:rotate-90 transition-transform inline-block">▶</span>
                             </h3>
                             ${fortuneIndicator}
                             ${oncePerRound}
