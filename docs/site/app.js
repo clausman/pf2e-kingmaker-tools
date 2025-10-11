@@ -264,20 +264,28 @@ function renderActivity(activity) {
     const skills = [];
     const skillsWithLabels = [];
     let hasSkillRequirement = false;
-    let meetsRequirements = false;
+    let meetsKingdomRequirements = false;
+    let leaderHasSkill = false;
     const settings = getSettings();
     const kingdomProficiency = settings.kingdomProficiency;
+    const leaderProficiency = settings.leaderProficiency;
     
     if (activity.skills) {
         for (const [skill, rank] of Object.entries(activity.skills)) {
             const skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
             skills.push(skillName);
             
-            // Check if kingdom skill proficiency meets the requirement
+            // Check if kingdom skill proficiency meets the requirement (for greying out)
             const kingdomSkillRank = kingdomProficiency[skill] || 0;
             if (kingdomSkillRank >= rank) {
-                meetsRequirements = true;
+                meetsKingdomRequirements = true;
             }
+            
+            // Check if leader has this skill (for action cost)
+            if (leaderProficiency[skill] === true) {
+                leaderHasSkill = true;
+            }
+            
             hasSkillRequirement = true;
             
             // Add proficiency label for ranks > 0
@@ -306,12 +314,12 @@ function renderActivity(activity) {
     }
     const skillsText = skillsWithLabels.length > 0 ? `<span class="text-sm text-gray-600">Skills: ${skillsWithLabels.join(', ')}</span>` : '';
     
-    // Determine action cost indicator (1 action if meets requirements, 2 actions if doesn't)
+    // Determine action cost indicator based on leader skills (1 action if leader has skill, 2 actions if not)
     const actionCostIndicator = hasSkillRequirement ? 
-        (meetsRequirements ? '<span class="activity-action-cost">[one-action]</span>' : '<span class="activity-action-cost">[two-actions]</span>') : '';
+        (leaderHasSkill ? '<span class="activity-action-cost">[one-action]</span>' : '<span class="activity-action-cost">[two-actions]</span>') : '';
     
-    // Determine if activity should be greyed out
-    const unavailableClass = (hasSkillRequirement && !meetsRequirements) ? 'activity-unavailable' : '';
+    // Determine if activity should be greyed out based on kingdom proficiency
+    const unavailableClass = (hasSkillRequirement && !meetsKingdomRequirements) ? 'activity-unavailable' : '';
     
     // Get DC type (not rendered, but kept for potential future use)
     let dcType = '';
@@ -489,25 +497,19 @@ function renderSettingsUI() {
     const leaderContainer = document.getElementById('leaderProficiencyContainer');
     const kingdomContainer = document.getElementById('kingdomProficiencyContainer');
     
-    // Render leader proficiency radio buttons
+    // Render leader skills as checkboxes (leader either has the skill or doesn't)
     leaderContainer.innerHTML = kingdomSkills.map(skill => {
         const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
         return `
             <div class="bg-white border border-gray-200 rounded-lg p-4">
-                <div class="text-sm font-medium text-gray-900 mb-3">${skillLabel}</div>
-                <div class="space-y-2">
-                    ${PROFICIENCY_LEVELS.map(level => `
-                        <label class="flex items-center cursor-pointer">
-                            <input 
-                                type="radio" 
-                                name="leader_${skill}" 
-                                value="${level.value}"
-                                class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500"
-                            />
-                            <span class="ml-2 text-sm text-gray-700">${level.label}</span>
-                        </label>
-                    `).join('')}
-                </div>
+                <label class="flex items-center cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        name="leader_${skill}" 
+                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span class="ml-2 text-sm font-medium text-gray-900">${skillLabel}</span>
+                </label>
             </div>
         `;
     }).join('');
@@ -546,20 +548,20 @@ function loadSettings() {
         localStorage.setItem(SETTINGS_KEYS.CONTROL_DC, '14');
     }
     
-    // Load Leader Proficiency
+    // Load Leader Proficiency (now simple boolean checkboxes)
     const leaderProficiency = localStorage.getItem(SETTINGS_KEYS.LEADER_PROFICIENCY);
     if (leaderProficiency) {
         const settings = JSON.parse(leaderProficiency);
-        Object.entries(settings).forEach(([skill, value]) => {
-            const radio = document.querySelector(`input[name="leader_${skill}"][value="${value}"]`);
-            if (radio) {
-                radio.checked = true;
+        Object.entries(settings).forEach(([skill, hasSkill]) => {
+            const checkbox = document.querySelector(`input[name="leader_${skill}"]`);
+            if (checkbox) {
+                checkbox.checked = hasSkill;
             }
         });
     } else {
-        // Set all to Untrained (0) by default
-        document.querySelectorAll('input[name^="leader_"][value="0"]').forEach(radio => {
-            radio.checked = true;
+        // Set all to unchecked by default
+        document.querySelectorAll('input[name^="leader_"]').forEach(checkbox => {
+            checkbox.checked = false;
         });
     }
     
@@ -587,12 +589,12 @@ function saveSettings() {
     const controlDC = document.getElementById('controlDC').value;
     localStorage.setItem(SETTINGS_KEYS.CONTROL_DC, controlDC);
     
-    // Save Leader Proficiency
+    // Save Leader Proficiency (now simple boolean for each skill)
     const leaderProficiency = {};
     kingdomSkills.forEach(skill => {
-        const radio = document.querySelector(`input[name="leader_${skill}"]:checked`);
-        if (radio) {
-            leaderProficiency[skill] = parseInt(radio.value);
+        const checkbox = document.querySelector(`input[name="leader_${skill}"]`);
+        if (checkbox) {
+            leaderProficiency[skill] = checkbox.checked;
         }
     });
     localStorage.setItem(SETTINGS_KEYS.LEADER_PROFICIENCY, JSON.stringify(leaderProficiency));
