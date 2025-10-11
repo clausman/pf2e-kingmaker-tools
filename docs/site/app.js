@@ -3,6 +3,23 @@ let allActivities = [];
 let translations = {};
 let currentPhaseFilter = 'all';
 let currentSearchTerm = '';
+let kingdomSkills = [];
+
+// Settings keys for localStorage
+const SETTINGS_KEYS = {
+    CONTROL_DC: 'kingmaker_control_dc',
+    LEADER_PROFICIENCY: 'kingmaker_leader_proficiency',
+    KINGDOM_PROFICIENCY: 'kingmaker_kingdom_proficiency'
+};
+
+// Proficiency levels
+const PROFICIENCY_LEVELS = [
+    { value: 0, label: 'Untrained' },
+    { value: 1, label: 'Trained' },
+    { value: 2, label: 'Expert' },
+    { value: 3, label: 'Master' },
+    { value: 4, label: 'Legendary' }
+];
 
 // Load data
 async function loadData() {
@@ -19,6 +36,15 @@ async function loadData() {
         allActivities = activitiesData.filter(activity => activity.enabled !== false);
         translations = translationsData['pf2e-kingmaker-tools'];
         
+        // Extract unique kingdom skills from activities
+        const skillsSet = new Set();
+        allActivities.forEach(activity => {
+            if (activity.skills) {
+                Object.keys(activity.skills).forEach(skill => skillsSet.add(skill));
+            }
+        });
+        kingdomSkills = Array.from(skillsSet).sort();
+        
         // Sort activities by order (if available) and then by title
         allActivities.sort((a, b) => {
             if (a.order && b.order) return a.order - b.order;
@@ -29,6 +55,7 @@ async function loadData() {
         
         renderActivities();
         setupEventListeners();
+        initializeSettings();
         
         // Hide loading, show content
         document.getElementById('loadingState').classList.add('hidden');
@@ -396,6 +423,162 @@ function setupEventListeners() {
             renderActivities();
         });
     });
+    
+    // Tab switching
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const targetTab = e.target.dataset.tab;
+            switchTab(targetTab);
+        });
+    });
+    
+    // Save settings button
+    document.getElementById('saveSettings').addEventListener('click', saveSettings);
+}
+
+// Switch between tabs
+function switchTab(tabName) {
+    // Update button states
+    document.querySelectorAll('.tab-button').forEach(button => {
+        if (button.dataset.tab === tabName) {
+            button.classList.add('active', 'border-blue-600', 'text-blue-600');
+            button.classList.remove('border-transparent', 'text-gray-500');
+        } else {
+            button.classList.remove('active', 'border-blue-600', 'text-blue-600');
+            button.classList.add('border-transparent', 'text-gray-500');
+        }
+    });
+    
+    // Update tab content visibility
+    document.querySelectorAll('.tab-content').forEach(content => {
+        if (content.id === `${tabName}Tab`) {
+            content.classList.remove('hidden');
+        } else {
+            content.classList.add('hidden');
+        }
+    });
+}
+
+// Initialize settings UI
+function initializeSettings() {
+    renderSettingsUI();
+    loadSettings();
+}
+
+// Render settings UI
+function renderSettingsUI() {
+    const leaderContainer = document.getElementById('leaderProficiencyContainer');
+    const kingdomContainer = document.getElementById('kingdomProficiencyContainer');
+    
+    // Render leader proficiency selects
+    leaderContainer.innerHTML = kingdomSkills.map(skill => {
+        const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
+        return `
+            <div>
+                <label for="leader_${skill}" class="block text-sm font-medium text-gray-700 mb-1">
+                    ${skillLabel}
+                </label>
+                <select id="leader_${skill}" class="leader-proficiency w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-skill="${skill}">
+                    ${PROFICIENCY_LEVELS.map(level => 
+                        `<option value="${level.value}">${level.label}</option>`
+                    ).join('')}
+                </select>
+            </div>
+        `;
+    }).join('');
+    
+    // Render kingdom proficiency selects
+    kingdomContainer.innerHTML = kingdomSkills.map(skill => {
+        const skillLabel = skill.charAt(0).toUpperCase() + skill.slice(1);
+        return `
+            <div>
+                <label for="kingdom_${skill}" class="block text-sm font-medium text-gray-700 mb-1">
+                    ${skillLabel}
+                </label>
+                <select id="kingdom_${skill}" class="kingdom-proficiency w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" data-skill="${skill}">
+                    ${PROFICIENCY_LEVELS.map(level => 
+                        `<option value="${level.value}">${level.label}</option>`
+                    ).join('')}
+                </select>
+            </div>
+        `;
+    }).join('');
+}
+
+// Load settings from localStorage
+function loadSettings() {
+    // Load Control DC
+    const controlDC = localStorage.getItem(SETTINGS_KEYS.CONTROL_DC);
+    if (controlDC !== null) {
+        document.getElementById('controlDC').value = controlDC;
+    }
+    
+    // Load Leader Proficiency
+    const leaderProficiency = localStorage.getItem(SETTINGS_KEYS.LEADER_PROFICIENCY);
+    if (leaderProficiency) {
+        const settings = JSON.parse(leaderProficiency);
+        Object.entries(settings).forEach(([skill, value]) => {
+            const element = document.getElementById(`leader_${skill}`);
+            if (element) {
+                element.value = value;
+            }
+        });
+    }
+    
+    // Load Kingdom Proficiency
+    const kingdomProficiency = localStorage.getItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY);
+    if (kingdomProficiency) {
+        const settings = JSON.parse(kingdomProficiency);
+        Object.entries(settings).forEach(([skill, value]) => {
+            const element = document.getElementById(`kingdom_${skill}`);
+            if (element) {
+                element.value = value;
+            }
+        });
+    }
+}
+
+// Save settings to localStorage
+function saveSettings() {
+    // Save Control DC
+    const controlDC = document.getElementById('controlDC').value;
+    localStorage.setItem(SETTINGS_KEYS.CONTROL_DC, controlDC);
+    
+    // Save Leader Proficiency
+    const leaderProficiency = {};
+    document.querySelectorAll('.leader-proficiency').forEach(select => {
+        leaderProficiency[select.dataset.skill] = parseInt(select.value);
+    });
+    localStorage.setItem(SETTINGS_KEYS.LEADER_PROFICIENCY, JSON.stringify(leaderProficiency));
+    
+    // Save Kingdom Proficiency
+    const kingdomProficiency = {};
+    document.querySelectorAll('.kingdom-proficiency').forEach(select => {
+        kingdomProficiency[select.dataset.skill] = parseInt(select.value);
+    });
+    localStorage.setItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY, JSON.stringify(kingdomProficiency));
+    
+    // Show confirmation
+    const button = document.getElementById('saveSettings');
+    const originalText = button.textContent;
+    button.textContent = 'Saved!';
+    button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+    button.classList.add('bg-green-600', 'hover:bg-green-700');
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('bg-green-600', 'hover:bg-green-700');
+        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+    }, 2000);
+}
+
+// Get settings (for use in other tabs)
+function getSettings() {
+    return {
+        controlDC: parseInt(localStorage.getItem(SETTINGS_KEYS.CONTROL_DC)) || 0,
+        leaderProficiency: JSON.parse(localStorage.getItem(SETTINGS_KEYS.LEADER_PROFICIENCY) || '{}'),
+        kingdomProficiency: JSON.parse(localStorage.getItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY) || '{}')
+    };
 }
 
 // Initialize
