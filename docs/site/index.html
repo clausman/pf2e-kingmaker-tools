@@ -24,6 +24,35 @@
             margin: 0 0.125rem;
         }
         
+        /* Activity requirement action indicator */
+        .activity-action-cost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #5e0000;
+            color: white;
+            font-weight: bold;
+            font-size: 0.6rem;
+            margin-left: 0.25rem;
+            flex-shrink: 0;
+        }
+        
+        /* Greyed out activities */
+        .activity-unavailable {
+            opacity: 0.5;
+        }
+        
+        .activity-unavailable .activity-card-summary {
+            background-color: #f5f5f5 !important;
+        }
+        
+        .activity-unavailable h3 {
+            color: #9ca3af !important;
+        }
+        
         /* Smooth transitions for accordions */
         details summary {
             cursor: pointer;

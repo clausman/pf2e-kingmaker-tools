@@ -260,13 +260,25 @@ function renderActivity(activity) {
     const fortuneIndicator = activity.fortune ? '<span class="fortune-indicator">🍀</span>' : '';
     const oncePerRound = activity.oncePerRound ? '<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Once per round</span>' : '';
     
-    // Get skill names with proficiency ranks
+    // Get skill names with proficiency ranks and check requirements
     const skills = [];
     const skillsWithLabels = [];
+    let hasSkillRequirement = false;
+    let meetsRequirements = false;
+    const settings = getSettings();
+    const kingdomProficiency = settings.kingdomProficiency;
+    
     if (activity.skills) {
         for (const [skill, rank] of Object.entries(activity.skills)) {
             const skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
             skills.push(skillName);
+            
+            // Check if kingdom skill proficiency meets the requirement
+            const kingdomSkillRank = kingdomProficiency[skill] || 0;
+            if (kingdomSkillRank >= rank) {
+                meetsRequirements = true;
+            }
+            hasSkillRequirement = true;
             
             // Add proficiency label for ranks > 0
             let proficiencyLabel = '';
@@ -294,6 +306,13 @@ function renderActivity(activity) {
     }
     const skillsText = skillsWithLabels.length > 0 ? `<span class="text-sm text-gray-600">Skills: ${skillsWithLabels.join(', ')}</span>` : '';
     
+    // Determine action cost indicator (1 action if meets requirements, 2 actions if doesn't)
+    const actionCostIndicator = hasSkillRequirement ? 
+        (meetsRequirements ? '<span class="activity-action-cost">1A</span>' : '<span class="activity-action-cost">2A</span>') : '';
+    
+    // Determine if activity should be greyed out
+    const unavailableClass = (hasSkillRequirement && !meetsRequirements) ? 'activity-unavailable' : '';
+    
     // Get DC type (not rendered, but kept for potential future use)
     let dcType = '';
     if (activity.dc) {
@@ -305,14 +324,15 @@ function renderActivity(activity) {
     }
     
     return `
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden activity-card" data-phase="${activity.phase}" data-id="${activity.id}">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden activity-card ${unavailableClass}" data-phase="${activity.phase}" data-id="${activity.id}">
             <details class="group">
-                <summary class="p-3 hover:bg-gray-50 transition-colors">
+                <summary class="p-3 hover:bg-gray-50 transition-colors activity-card-summary">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2 flex-1 min-w-0">
                             ${actionGlyphs}
                             <h3 class="font-semibold text-gray-900 text-sm truncate flex items-center gap-1">
                                 ${title}
+                                ${actionCostIndicator}
                                 <span class="text-gray-400 text-xs group-open:rotate-90 transition-transform inline-block">▶</span>
                             </h3>
                             ${fortuneIndicator}
@@ -587,6 +607,9 @@ function saveSettings() {
         }
     });
     localStorage.setItem(SETTINGS_KEYS.KINGDOM_PROFICIENCY, JSON.stringify(kingdomProficiency));
+    
+    // Re-render activities to reflect new settings
+    renderActivities();
     
     // Show confirmation
     const button = document.getElementById('saveSettings');
