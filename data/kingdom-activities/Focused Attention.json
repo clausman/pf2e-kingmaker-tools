@@ -1,5 +1,6 @@
 {
   "id": "focused-attention",
+  "actions": 1,
   "oncePerRound": false,
   "fortune": false,
   "enabled": true,
